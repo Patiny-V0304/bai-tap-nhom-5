@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Buổi 06 — Bài tập thực hành</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f4f6f8;
+    color: #111;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .top-bar {
+    background: #0d1f2d;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .top-bar .label { font-size: 11px; color: #5DCAA5; letter-spacing: 0.1em; font-weight: 500; }
+  .top-bar .title { font-size: 16px; font-weight: 500; color: #fff; margin-top: 3px; }
+  .top-bar .timer {
+    background: #1D9E75;
+    color: #E1F5EE;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 20px;
+  }
+
+  /* ── Layout ── */
+  .page { max-width: 1000px; margin: 0 auto; padding: 28px 24px 48px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .full { grid-column: 1 / -1; }
+
+  /* ── Section titles ── */
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: #1D9E75;
+    margin-bottom: 10px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: #fff;
+    border: 1px solid #e4e8ec;
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+
+  /* ── Yêu cầu block ── */
+  .yc-text { font-size: 13.5px; color: #333; line-height: 1.7; }
+  .yc-text code {
+    background: #eef6f2; color: #0F6E56;
+    padding: 1px 6px; border-radius: 4px;
+    font-family: 'Courier New', monospace; font-size: 12px;
+  }
+
+  /* ── Struct pills ── */
+  .struct { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+  .pill {
+    background: #eef6f2; border: 1px solid #b2ddd0;
+    border-radius: 20px; padding: 3px 12px;
+    font-family: 'Courier New', monospace; font-size: 12px; color: #0F6E56;
+  }
+  .arrow { color: #ccc; }
+
+  /* ── Route rows ── */
+  .route-row {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 0; border-bottom: 1px solid #f0f0f0;
+  }
+  .route-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .badge {
+    font-family: 'Courier New', monospace; font-size: 11px; font-weight: 500;
+    padding: 2px 8px; border-radius: 20px; flex-shrink: 0; margin-top: 2px;
+  }
+  .mw  { background: #EEEDFE; color: #3C3489; }
+  .get { background: #E1F5EE; color: #0F6E56; }
+  .post{ background: #E6F1FB; color: #185FA5; }
+  .fe  { background: #FAEEDA; color: #633806; }
+  .st  { background: #EEEDFE; color: #3C3489; }
+  .desc { font-size: 13px; color: #333; line-height: 1.5; }
+  .desc span { display: block; font-size: 12px; color: #888; margin-top: 2px; }
+  .desc code {
+    background: #eef6f2; color: #0F6E56;
+    padding: 1px 5px; border-radius: 3px;
+    font-family: 'Courier New', monospace; font-size: 11px;
+  }
+
+  /* ── Gợi ý list ── */
+  .hint-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .hint-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: #444; line-height: 1.6; }
+  .hint-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #eef6f2; border: 1px solid #b2ddd0;
+    color: #0F6E56; font-size: 11px; font-weight: 500;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+  }
+  .hint-list code {
+    background: #eef6f2; color: #0F6E56;
+    padding: 1px 5px; border-radius: 3px;
+    font-family: 'Courier New', monospace; font-size: 12px;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    border: none; border-top: 2px dashed #e0e0e0;
+    margin: 28px 0 24px;
+    position: relative;
+  }
+  .divider-label {
+    text-align: center; font-size: 11px; font-weight: 500;
+    color: #1D9E75; letter-spacing: 0.1em;
+    background: #f4f6f8; display: inline-block;
+    padding: 0 12px;
+    position: relative; top: -10px; left: 50%; transform: translateX(-50%);
+  }
+
+  /* ── Demo section ── */
+  .demo-header {
+    background: #0d1f2d;
+    border-radius: 10px 10px 0 0;
+    padding: 10px 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .demo-header span { font-size: 12px; color: #5DCAA5; font-weight: 500; letter-spacing: 0.08em; }
+  .demo-dot { width: 8px; height: 8px; border-radius: 50%; background: #1D9E75; }
+
+  .demo-body {
+    background: #fff;
+    border: 1px solid #e4e8ec; border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 18px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+  }
+
+  .form-section h3 { font-size: 12px; font-weight: 500; color: #1D9E75; letter-spacing: 0.08em; margin-bottom: 12px; }
+  .form-section label { display: block; font-size: 11px; color: #888; margin-bottom: 3px; margin-top: 8px; }
+  .form-section input {
+    width: 100%; padding: 7px 10px; font-size: 13px;
+    border: 1px solid #ddd; border-radius: 6px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-section input:focus { border-color: #1D9E75; }
+
+  .btn {
+    margin-top: 12px; width: 100%; padding: 9px;
+    font-size: 13px; font-weight: 500;
+    background: #1D9E75; color: #fff;
+    border: none; border-radius: 6px; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: #0F6E56; }
+  .btn:active { transform: scale(0.98); }
+
+  .result-box {
+    margin-top: 10px;
+    background: #f8f9fa; border: 1px solid #e0e0e0;
+    border-radius: 6px; padding: 10px 12px;
+    font-family: 'Courier New', monospace; font-size: 12px;
+    line-height: 1.7; min-height: 52px; color: #666;
+    white-space: pre-wrap; transition: all 0.2s;
+  }
+  .result-box.ok  { border-color: #b2ddd0; background: #eef6f2; color: #085041; }
+  .result-box.err { border-color: #f5c4b3; background: #faece7; color: #712B13; }
+
+  /* ── Console log ── */
+  .console-wrap { grid-column: 1 / -1; }
+  .console-wrap h3 { font-size: 12px; font-weight: 500; color: #888; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .console {
+    background: #0a1a28; border-radius: 6px;
+    padding: 10px 14px; font-family: 'Courier New', monospace;
+    font-size: 12px; color: #5DCAA5; line-height: 1.8;
+    min-height: 52px; max-height: 120px; overflow-y: auto;
+  }
+  .console .dim { color: #3a6a7a; }
+
+  /* ── Footer note ── */
+  .note {
+    margin-top: 20px; padding: 12px 16px;
+    background: #FAEEDA; border: 1px solid #FAC775;
+    border-radius: 8px; font-size: 12px; color: #633806;
+    line-height: 1.6;
+  }
+  .note strong { font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div>
+    <div class="label">BUỔI 06 — BÀI TẬP THỰC HÀNH</div>
+    <div class="title">Xây dựng server + form đăng ký người dùng</div>
+  </div>
+
+</div>
+
+<div class="page">
+
+  <!-- ── ĐỀ BÀI ─────────────────────────────── -->
+  <div style="margin-bottom:20px;">
+    <p class="section-label">ĐỀ BÀI</p>
+    <div style="font-size:13px;color:#555;line-height:1.6;">Node.js + Express · Middleware · Routing · HTML + Fetch API</div>
+  </div>
+
+  <div class="two-col" style="margin-bottom:16px;">
+    <div class="card full">
+      <p class="section-label">YÊU CẦU</p>
+      <p class="yc-text">Viết Express server có middleware pipeline và 2 route. Tạo thêm file <code>index.html</code> với 2 form gọi API bằng <code>fetch()</code> và hiển thị kết quả ngay trên trang — không reload.</p>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-bottom:16px;">
+    <div class="card full">
+      <p class="section-label">CẤU TRÚC PROJECT</p>
+      <div class="struct">
+        <span class="pill">index.js</span>
+        <span class="arrow">—</span>
+        <span class="pill">public/index.html</span>
+        <span class="arrow">—</span>
+        <span class="pill">.env</span>
+        <span class="arrow">—</span>
+        <span class="pill">.gitignore</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <p class="section-label">BACKEND — index.js</p>
+      <div class="route-row"><span class="badge mw">MW</span><div class="desc">Logger — ghi <code>[time] METHOD /path</code> ra console cho mọi request</div></div>
+      <div class="route-row"><span class="badge mw">MW</span><div class="desc">checkAge — <code>age &lt; 18</code> hoặc không có → trả <code>400</code> + message lỗi, ngược lại <code>next()</code></div></div>
+      <div class="route-row"><span class="badge get">GET</span><div class="desc">/api/info?name=&amp;age=<span>Gắn checkAge. Trả JSON: name, age, lời chào mừng</span></div></div>
+      <div class="route-row"><span class="badge post">POST</span><div class="desc">/api/register — body: name, age, email<span>Validate không bỏ trống. Trả lại thông tin + id tự tăng</span></div></div>
+      <div class="route-row"><span class="badge st">STATIC</span><div class="desc"><code>express.static('public')</code> — serve file HTML cho trình duyệt</div></div>
+    </div>
+
+    <div class="card">
+      <p class="section-label">FRONTEND — public/index.html</p>
+      <div class="route-row"><span class="badge fe">FORM 1</span><div class="desc">Input name + age → gọi <code>GET /api/info</code> bằng fetch → hiện kết quả hoặc lỗi ngay trên trang</div></div>
+      <div class="route-row" style="border-bottom:none;"><span class="badge fe">FORM 2</span><div class="desc">Input name + age + email → gọi <code>POST /api/register</code> bằng fetch → hiện thông tin đăng ký thành công</div></div>
+
+      <div style="border-top:1px solid #f0f0f0; margin-top:12px; padding-top:12px;">
+        <p class="section-label">GỢI Ý</p>
+        <ul class="hint-list">
+          <li><div class="hint-num">1</div><div>Middleware phải đặt trước route — Express chạy theo thứ tự khai báo</div></li>
+          <li><div class="hint-num">2</div><div>Route GET gắn middleware riêng: <code>app.get('/api/info', checkAge, handler)</code></div></li>
+          <li><div class="hint-num">3</div><div>Bắt response: <code>.then(res => res.json())</code> rồi đẩy vào <code>innerHTML</code></div></li>
+          <li><div class="hint-num">4</div><div>Nhớ <code>event.preventDefault()</code> để trang không reload khi submit</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DEMO ─────────────────────────────────── -->
+  <hr class="divider"/>
+  <div class="divider-label">DEMO THỬ NGAY</div>
+
+  <div class="demo-header">
+    <div class="demo-dot"></div>
+    <span>DEMO LIVE — Giả lập API chạy trong trình duyệt</span>
+  </div>
+  <div class="demo-body">
+
+    <div class="form-section">
+      <h3>FORM 1 — GET /api/info</h3>
+      <label>Tên</label>
+      <input type="text" id="info-name" placeholder="Nhập tên..."/>
+      <label>Tuổi</label>
+      <input type="number" id="info-age" placeholder="Nhập tuổi..."/>
+      <button class="btn" onclick="handleInfo()">Gửi GET /api/info</button>
+      <div class="result-box" id="info-result">Kết quả hiện ở đây...</div>
+    </div>
+
+    <div class="form-section">
+      <h3>FORM 2 — POST /api/register</h3>
+      <label>Tên</label>
+      <input type="text" id="reg-name" placeholder="Nhập tên..."/>
+      <label>Tuổi</label>
+      <input type="number" id="reg-age" placeholder="Nhập tuổi..."/>
+      <label>Email</label>
+      <input type="email" id="reg-email" placeholder="Nhập email..."/>
+      <button class="btn" onclick="handleRegister()">Gửi POST /api/register</button>
+      <div class="result-box" id="reg-result">Kết quả hiện ở đây...</div>
+    </div>
+
+    <div class="console-wrap">
+      <h3>CONSOLE LOG — Middleware logger</h3>
+      <div class="console" id="console-log">
+        <span class="dim">// Log sẽ hiện ở đây khi bạn gửi request...</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note">
+    <strong>Lưu ý:</strong> Demo này giả lập API bằng JavaScript trong trình duyệt — không cần cài Node.js. Khi bạn code thật, logic tương tự sẽ chạy trên Express server.
+  </div>
+
+</div>
+
+<script>
+  let nextId = 1;
+  const logs = [];
+
+  function addLog(method, path) {
+    const time = new Date().toISOString();
+    logs.unshift(`[${time}] ${method} ${path}`);
+    if (logs.length > 6) logs.pop();
+    document.getElementById('console-log').innerHTML =
+      logs.map(l => `<div>${l}</div>`).join('');
+  }
+
+  function fakeCheckAge(age) {
+    if (!age || Number(age) < 18) return false;
+    return true;
+  }
+
+  function handleInfo() {
+    const name = document.getElementById('info-name').value.trim();
+    const age  = document.getElementById('info-age').value.trim();
+    const el   = document.getElementById('info-result');
+
+    addLog('GET', `/api/info?name=${name}&age=${age}`);
+
+    if (!fakeCheckAge(age)) {
+      el.textContent = JSON.stringify({ error: 'Bạn chưa đủ 18 tuổi' }, null, 2);
+      el.className = 'result-box err';
+      return;
+    }
+    if (!name) {
+      el.textContent = JSON.stringify({ error: 'Vui lòng nhập tên' }, null, 2);
+      el.className = 'result-box err';
+      return;
+    }
+    el.textContent = JSON.stringify({ name, age: Number(age), message: `Chào mừng ${name}!` }, null, 2);
+    el.className = 'result-box ok';
+  }
+
+  function handleRegister() {
+    const name  = document.getElementById('reg-name').value.trim();
+    const age   = document.getElementById('reg-age').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const el    = document.getElementById('reg-result');
+
+    addLog('POST', '/api/register');
+
+    if (!name || !age || !email) {
+      el.textContent = JSON.stringify({ error: 'Vui lòng điền đầy đủ' }, null, 2);
+      el.className = 'result-box err';
+      return;
+    }
+    const user = { id: nextId++, name, age: Number(age), email };
+    el.textContent = JSON.stringify(user, null, 2);
+    el.className = 'result-box ok';
+  }
+</script>
+</body>
+</html>
